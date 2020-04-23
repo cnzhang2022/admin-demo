@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- @author tao on 2020-04-20 11:57:47 -->
+<mapper namespace="com.admin.dao.EmployeeMapper">
+    <resultMap type="com.admin.entity.Employee" id="employeeMap">
+        <id column="id" property="id"/>
+            <result column="name" property="name"/>
+            <result column="age" property="age"/>
+            <result column="address" property="address"/>
+    </resultMap>
+    <!-- //@NotReplaceableStart -->
+    <!-- 重新生成代码时，NotReplaceableStart -> NotReplaceableEnd 中间的内容不会被覆盖 -->
+
+
+    <!-- //@NotReplaceableEnd  -->
+</mapper>

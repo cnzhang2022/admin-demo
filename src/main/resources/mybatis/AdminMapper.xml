@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- @author tao on 2020-04-16 16:58:51 -->
+<mapper namespace="com.admin.dao.AdminMapper">
+    <resultMap type="com.admin.entity.Admin" id="adminMap">
+        <id column="id" property="id"/>
+            <result column="loginname" property="loginname"/>
+            <result column="telphone" property="telphone"/>
+            <result column="email" property="email"/>
+            <result column="role" property="role"/>
+            <result column="status" property="status"/>
+            <result column="create_time" property="createTime"/>
+            <result column="modify_time" property="modifyTime"/>
+    </resultMap>
+    <!-- //@NotReplaceableStart -->
+    <!-- 重新生成代码时，NotReplaceableStart -> NotReplaceableEnd 中间的内容不会被覆盖 -->
+
+
+    <!-- //@NotReplaceableEnd  -->
+</mapper>

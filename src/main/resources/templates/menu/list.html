@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/static/layuiadmin/css/layui.css" media="all">
+    <link rel="stylesheet" href="/static/layuiadmin/css/admin.css" media="all">
+</head>
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+
+        <div class="layui-card-body">
+            <div style="padding-bottom: 10px;">
+                <button class="layui-btn layuiadmin-btn-admin" data-type="add"><i class="layui-icon layui-icon-addition"></i>添加</button>
+            </div>
+
+            <table id="LAY-table" lay-filter="LAY-table"></table>
+            <script type="text/html" id="buttonTpl">
+                {{#  if(d.status == 1){ }}
+                <button class="layui-btn layui-btn-xs">已审核</button>
+                {{#  } else { }}
+                <button class="layui-btn layui-btn-primary layui-btn-xs">未审核</button>
+                {{#  } }}
+            </script>
+            <script type="text/html" id="barDemo">
+                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit" title="编辑菜单"><i class="layui-icon layui-icon-edit"></i>编辑</a>
+                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del" title="删除菜单"><i class="layui-icon layui-icon-delete"></i>删除</a>
+                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="add" title="新增下级菜单"><i class="layui-icon layui-icon-addition"></i>新增</a>
+            </script>
+        </div>
+    </div>
+</div>
+
+<script src="/static/layuiadmin/layui.js"></script>
+<script th:inline="none">
+    layui.config({
+        base: '/static/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index', 'table', 'treeTable'], function(){
+        var $ = layui.$
+            ,form = layui.form
+            ,table = layui.table;
+        var treeTable = layui.treeTable;
+        // 渲染树形表格
+        var insTb = treeTable.render({
+            elem: '#LAY-table',
+            tree: {
+                iconIndex: 0,           // 折叠图标显示在第几列
+                isPidData: true,        // 是否是id、pid形式数据
+                idName: 'id',           // id字段名称
+                pidName: 'parentId',     // pid字段名称
+                arrowType: 'arrow2',
+                getIcon: 'ew-tree-icon-style2'
+            },
+            cols: [[
+                {field: 'name', title: '菜单名称'},
+                {field: 'href', title: '菜单地址'},
+                {field: 'permission', title: '权限标识'},
+                {align: 'center', toolbar: '#barDemo', title: '操作', width: 300}
+            ]],
+            reqData: function(data, callback) {
+                // 在这里写ajax请求，通过callback方法回调数据
+                $.post('/menu/select', function (res) {
+                    if(res.code==0) callback(res.data);
+                    else callback(res.msg);
+                });
+            }
+        });
+
+        // 工具列点击事件
+        treeTable.on('tool(LAY-table)', function (obj) {
+            var event = obj.event;
+            if (event === 'del') {
+                $.ajax({
+                    type: "get",
+                    url: "/menu/delete?id="+obj.data.id,
+                    dataType: "json",
+                    success: function(data){
+                        obj.del();
+                        layer.msg('删除成功');
+                    }
+                });
+            } else if (event === 'edit') {
+                var idx = layer.open({
+                    type: 2,
+                    title: "编辑菜单",
+                    content: "edit",
+                    success: function(layero, index) {
+                        var data = obj.data;
+                        var body = layui.layer.getChildFrame('body', index);
+                        body.find("[name='id']").val(data.id);
+                        body.find("[name='parentId']").val(data.parentId);
+                        body.find("input[name='type'][value='"+data.type+"']").attr('checked',true);
+                        body.find("[name='name']").val(data.name);
+                        body.find("[name='href']").val(data.href);
+                        body.find("[name='icon']").val(data.icon);
+                        body.find("[name='permission']").val(data.permission);
+                        $.ajax({
+                            type: "get",
+                            url: "/menu/get?id="+data.parentId,
+                            dataType: "json",
+                            success: function(res){
+                                body.find("[name='parentName']").val(res.data.name);
+                            }
+                        });
+                    }
+                })
+                layui.layer.full(idx);
+            } else if (event === 'add') {
+                var idx = layer.open({
+                    type: 2,
+                    title: "添加菜单",
+                    content: "add",
+                    success: function(layero, index) {
+                        var data = obj.data;
+                        var body = layui.layer.getChildFrame('body', index);
+                        body.find("[name='parentId']").val(data.id);
+                        body.find("[id='parentName']").val(data.name);
+                    }
+                })
+                layui.layer.full(idx);
+            }
+        });
+
+    });
+</script>
+</body>
+</html>

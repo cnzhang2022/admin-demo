@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title></title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <link rel="stylesheet" href="/static/layuiadmin/css/layui.css" media="all">
+        <link rel="stylesheet" href="/static/layuiadmin/css/admin.css" media="all">
+    </head>
+    <body>
+
+        <div class="layui-fluid">
+            <div class="layui-card">
+                <div class="layui-card-body" style="padding: 15px;">
+                    <form class="layui-form" action="" lay-filter="component-form-group">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">上级菜单</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="" lay-verify="title" autocomplete="off" placeholder="请输入上级菜单" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">类型</label>
+                            <div class="layui-input-block">
+                                <input type="radio" name="type" title="菜单" value="1" checked>
+                                <input type="radio" name="type" title="权限" value="2">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">名称</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="name" lay-verify="required" placeholder="请输入链接" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">路径</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="href" placeholder="请输入路径" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">图标</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="icon" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">权限标识</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="permission" placeholder="请输入权限标识" class="layui-input">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item layui-layout-admin">
+                            <div class="layui-input-block">
+                                <div class="layui-footer" style="left: 0;">
+                                    <button class="layui-btn" lay-submit="" lay-filter="component-form-demo1">提交</button>
+                                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+        <script src="/static/layuiadmin/layui.js"></script>
+        <script>
+            layui.config({
+                base: '/static/layuiadmin/' //静态资源所在路径
+            }).extend({
+                index: 'lib/index' //主入口模块
+            }).use(['index', 'form'], function(){
+                var $ = layui.$
+                    ,admin = layui.admin
+                    ,layer = layui.layer
+                    ,form = layui.form;
+
+                /* 监听指定开关 */
+                form.on('switch(component-form-switchTest)', function(data){
+                    layer.msg('开关checked：'+ (this.checked ? 'true' : 'false'), {
+                        offset: '6px'
+                    });
+                    layer.tips('温馨提示：请注意开关状态的文字可以随意定义，而不仅仅是ON|OFF', data.othis)
+                });
+
+                /* 监听提交 */
+                form.on('submit(component-form-demo1)', function(data){
+                    parent.layer.alert(JSON.stringify(data.field), {
+                        title: '最终的提交信息'
+                    })
+                    return false;
+                });
+            });
+        </script>
+    </body>
+</html>
