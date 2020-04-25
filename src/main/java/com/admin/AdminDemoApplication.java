@@ -1,7 +1,7 @@
 package com.admin;
 
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
-import com.tao.frameworks.admin.spring.RequestMappingHandlerAdapterModify;
+import com.tao.frameworks.admin.spring.ResponseHandler;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -22,7 +22,7 @@ public class AdminDemoApplication {
     }
 
     @Bean
-    public RequestMappingHandlerAdapterModify requestMappingHandlerAdapterModify() {
-        return new RequestMappingHandlerAdapterModify();
+    public ResponseHandler responseHandler(){
+        return new ResponseHandler();
     }
 }
