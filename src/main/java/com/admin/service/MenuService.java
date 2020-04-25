@@ -1,5 +1,6 @@
 package com.admin.service;
 
+import com.admin.dto.MenuTreeDto;
 import org.springframework.stereotype.Service;
 import com.admin.dao.MenuMapper;
 import com.admin.entity.Menu;
@@ -7,6 +8,8 @@ import com.admin.dto.MenuDto;
 import com.admin.params.MenuParam;
 import com.tao.frameworks.admin.tools.Result;
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -112,6 +115,37 @@ public class MenuService {
         result.setData(menuDtoList);
         result.setCount(total);
         return result;
+    }
+
+    public List<MenuTreeDto> getMenuTree(Integer parentId) {
+        Map<String, Object> columnMap = new HashMap<>();
+        columnMap.put("parent_id", parentId);
+        List<Menu> menuList = menuMapper.selectByMap(columnMap);
+        List<MenuTreeDto> menuDtoList = menuList.stream().map(menu -> {
+            MenuTreeDto menuDto = new MenuTreeDto();
+            menuDto.setId(menu.getId()).setTitle(menu.getName());
+            menuDto.setChildren(findChild(menu.getId()));
+            return menuDto;
+        }).collect(Collectors.toList());
+        return menuDtoList;
+    }
+
+    public List<MenuTreeDto> findChild(Integer parentId){
+        Map<String, Object> columnMap = new HashMap<>();
+        columnMap.put("parent_id", parentId);
+        List<Menu> menuList = menuMapper.selectByMap(columnMap);
+        List<MenuTreeDto> menuDtoList = new ArrayList<>();
+        menuDtoList = menuList.stream().map(menu -> {
+            MenuTreeDto menuDto = new MenuTreeDto();
+            menuDto.setId(menu.getId()).setTitle(menu.getName());
+            List<MenuTreeDto> children = findChild(menu.getId());
+            menuDto.setChildren(children);
+            if(children.size()>0){
+                findChild(menu.getId());
+            }
+            return menuDto;
+        }).collect(Collectors.toList());
+        return menuDtoList;
     }
 
 }

@@ -16,15 +16,15 @@
 
         <div class="layui-card-body">
             <div style="padding-bottom: 10px;">
-                <button class="layui-btn layuiadmin-btn-admin" data-type="add"><i class="layui-icon layui-icon-addition"></i>添加</button>
+                <button class="layui-btn layuiadmin-btn" data-type="add"><i class="layui-icon layui-icon-addition"></i>添加</button>
             </div>
 
             <table id="LAY-table" lay-filter="LAY-table"></table>
-            <script type="text/html" id="buttonTpl">
-                {{#  if(d.status == 1){ }}
-                <button class="layui-btn layui-btn-xs">已审核</button>
+            <script type="text/html" id="typeTpl">
+                {{#  if(d.type == 1){ }}
+                菜单
                 {{#  } else { }}
-                <button class="layui-btn layui-btn-primary layui-btn-xs">未审核</button>
+                <span style="color: #c243d6">权限</span>
                 {{#  } }}
             </script>
             <script type="text/html" id="barDemo">
@@ -60,7 +60,8 @@
             },
             cols: [[
                 {field: 'name', title: '菜单名称'},
-                {field: 'href', title: '菜单地址'},
+                {field: 'type', title: '类型', templet: '#typeTpl'},
+                {field: 'href', title: '链接'},
                 {field: 'permission', title: '权限标识'},
                 {align: 'center', toolbar: '#barDemo', title: '操作', width: 300}
             ]],
@@ -71,6 +72,23 @@
                     else callback(res.msg);
                 });
             }
+        });
+
+        //事件
+        var active = {
+            add: function(){
+                layer.open({
+                    type: 2
+                    ,title: '添加菜单'
+                    ,content: 'add'
+                    ,area: ['500px', '480px']
+                    ,maxmin: true
+                });
+            }
+        }
+        $('.layui-btn.layuiadmin-btn').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
         });
 
         // 工具列点击事件
@@ -95,9 +113,9 @@
                         var data = obj.data;
                         var body = layui.layer.getChildFrame('body', index);
                         body.find("[name='id']").val(data.id);
-                        body.find("[name='parentId']").val(data.parentId);
-                        body.find("input[name='type'][value='"+data.type+"']").attr('checked',true);
+                        body.find("[id='parentId']").val(data.parentId);
                         body.find("[name='name']").val(data.name);
+                        body.find("input[name='type'][value='"+data.type+"']").attr('checked',true);
                         body.find("[name='href']").val(data.href);
                         body.find("[name='icon']").val(data.icon);
                         body.find("[name='permission']").val(data.permission);
@@ -106,7 +124,7 @@
                             url: "/menu/get?id="+data.parentId,
                             dataType: "json",
                             success: function(res){
-                                body.find("[name='parentName']").val(res.data.name);
+                                body.find("[id='menu']").val(res.data.name);
                             }
                         });
                     }
@@ -121,7 +139,7 @@
                         var data = obj.data;
                         var body = layui.layer.getChildFrame('body', index);
                         body.find("[name='parentId']").val(data.id);
-                        body.find("[id='parentName']").val(data.name);
+                        body.find("[id='menu']").val(data.name);
                     }
                 })
                 layui.layer.full(idx);

@@ -18,8 +18,8 @@
                         <div class="layui-form-item">
                             <label class="layui-form-label">上级菜单</label>
                             <div class="layui-input-block">
-                                <input type="text" id="parentName" placeholder="请输入上级菜单" class="layui-input" readonly>
-                                <input type="hidden" name="parentId">
+                                <input type="text" id="menu" placeholder="请输入上级菜单" class="layui-input" readonly>
+                                <input type="hidden" name="parentId" value="0">
                             </div>
                         </div>
                         <div class="layui-form-item">
@@ -79,6 +79,16 @@
                     ,layer = layui.layer
                     ,form = layui.form;
 
+                $("#menu").click(function () {
+                    layer.open({
+                        type: 2
+                        ,title: '上级菜单'
+                        ,content: 'tree'
+                        ,area: ['300px', '400px']
+                        ,maxmin: true
+
+                    });
+                })
 
                 /* 监听提交 */
                 form.on('submit(LAY-save-submit)', function(data){
@@ -90,11 +100,11 @@
                         success: function(data){
                             if(data.code==0) {
                                 layer.msg("成功", {time: 1000});
+                                parent.layer.close();
+                                parent.location.reload();
                             }else{
                                 layer.msg(data.msg, {time: 1000});
                             }
-                            parent.layer.close();
-                            parent.location.reload();
                         }
                     });
                     // parent.layer.alert(JSON.stringify(data.field), {

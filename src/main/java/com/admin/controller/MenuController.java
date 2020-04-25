@@ -1,5 +1,6 @@
 package com.admin.controller;
 
+import com.admin.dto.MenuTreeDto;
 import com.admin.entity.Menu;
 import com.admin.params.MenuParam;
 import com.admin.dto.MenuDto;
@@ -42,14 +43,19 @@ public class MenuController {
         return this.menuService.getById(id);
     }
 
-    @PostMapping(value = "/query", name = "分页查询")
+    @RequestMapping(value = "/query", name = "分页查询")
     public Result query(int page, int limit, MenuParam params) {
         return this.menuService.selectPage(page, limit, params);
     }
 
-    @PostMapping(value = "/select", name = "查询所有")
+    @RequestMapping(value = "/select", name = "查询所有")
     public List<MenuDto> select(MenuParam params) {
         return this.menuService.selectByMap(params);
+    }
+
+    @RequestMapping(value = "/getMenuTree", name = "")
+    public List<MenuTreeDto> getMenuTree(Integer parentId) {
+        return this.menuService.getMenuTree(parentId);
     }
 
 }
