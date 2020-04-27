@@ -25,8 +25,8 @@
                         <div class="layui-form-item">
                             <label class="layui-form-label">类型</label>
                             <div class="layui-input-block">
-                                <input type="radio" name="type" title="菜单" value="1" checked>
-                                <input type="radio" name="type" title="权限" value="2">
+                                <input type="radio" name="type" title="菜单" value="1" checked lay-filter="type">
+                                <input type="radio" name="type" title="权限" value="2" lay-filter="type">
                             </div>
                         </div>
                         <div class="layui-form-item">
@@ -41,10 +41,12 @@
                                 <input type="text" name="href" placeholder="请输入路径" class="layui-input">
                             </div>
                         </div>
-                        <div class="layui-form-item">
+                        <div class="layui-form-item" id="icon-div">
                             <label class="layui-form-label">图标</label>
                             <div class="layui-input-block">
-                                <input type="text" name="icon" class="layui-input">
+                                <span style="position: absolute;left: 10px;top: 2px;border-right: 1px solid #ccc;line-height: 2.2rem;width: 25px;"><i id="icon-show"></i></span>
+                                <input type="text" id="icon-input" class="layui-input" readonly>
+                                <input type="hidden" id="icon-bg" name="icon">
                             </div>
                         </div>
                         <div class="layui-form-item">
@@ -112,6 +114,25 @@
                     // })
                     return false;
                 });
+
+                $("#icon-input").click(function () {
+                    layer.open({
+                        type: 2
+                        ,title: '图标'
+                        ,content: 'icon'
+                        ,area: ['800px', '600px']
+                        ,maxmin: true
+
+                    });
+                })
+
+                form.on('radio(type)', function(data){
+                    if(data.value==1){
+                        $("#icon-div").show();
+                    }else{
+                        $("#icon-div").hide();
+                    }
+                })
             });
         </script>
     </body>

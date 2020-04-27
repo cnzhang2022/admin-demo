@@ -77,13 +77,13 @@
         //事件
         var active = {
             add: function(){
-                layer.open({
+                var idx = layer.open({
                     type: 2
                     ,title: '添加菜单'
                     ,content: 'add'
-                    ,area: ['500px', '480px']
                     ,maxmin: true
                 });
+                layui.layer.full(idx);
             }
         }
         $('.layui-btn.layuiadmin-btn').on('click', function(){
@@ -118,7 +118,11 @@
                         body.find("input[name='type'][value='"+data.type+"']").attr('checked',true);
                         body.find("[name='href']").val(data.href);
                         body.find("[name='icon']").val(data.icon);
+                        body.find("[id='icon-show']").attr("class", "layui-icon "+data.icon);
                         body.find("[name='permission']").val(data.permission);
+                        if(data.type==2){
+                            body.find("[id='icon-div']").hide();
+                        }
                         $.ajax({
                             type: "get",
                             url: "/menu/get?id="+data.parentId,
