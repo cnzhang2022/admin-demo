@@ -32,9 +32,10 @@
 
 
     function getData() {
+      var pid = $(window.parent.document).find("#parentId").val();
       var data = [];
       $.ajax({
-        url: "/menu/getMenuTree?parentId=0",
+        url: "/menu/getMenuTree?parentId=0&pid="+pid,
         type: "get",
         async: false,
         dataType: "json",

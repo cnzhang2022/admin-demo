@@ -117,20 +117,23 @@ public class MenuService {
         return result;
     }
 
-    public List<MenuTreeDto> getMenuTree(Integer parentId) {
+    public List<MenuTreeDto> getMenuTree(Integer parentId, Integer pid) {
         Map<String, Object> columnMap = new HashMap<>();
         columnMap.put("parent_id", parentId);
         List<Menu> menuList = menuMapper.selectByMap(columnMap);
         List<MenuTreeDto> menuDtoList = menuList.stream().map(menu -> {
             MenuTreeDto menuDto = new MenuTreeDto();
             menuDto.setId(menu.getId()).setTitle(menu.getName());
-            menuDto.setChildren(findChild(menu.getId()));
+            menuDto.setChildren(findChild(menuDto, menu.getId(), pid));
+            if(menuDto.getId().equals(pid)){
+                menuDto.setSpread(true);
+            }
             return menuDto;
         }).collect(Collectors.toList());
         return menuDtoList;
     }
 
-    public List<MenuTreeDto> findChild(Integer parentId){
+    public List<MenuTreeDto> findChild(MenuTreeDto parentDto, Integer parentId, Integer pid){
         Map<String, Object> columnMap = new HashMap<>();
         columnMap.put("parent_id", parentId);
         List<Menu> menuList = menuMapper.selectByMap(columnMap);
@@ -138,10 +141,14 @@ public class MenuService {
         menuDtoList = menuList.stream().map(menu -> {
             MenuTreeDto menuDto = new MenuTreeDto();
             menuDto.setId(menu.getId()).setTitle(menu.getName());
-            List<MenuTreeDto> children = findChild(menu.getId());
+            List<MenuTreeDto> children = findChild(menuDto, menu.getId(), pid);
             menuDto.setChildren(children);
+            if(menuDto.getId().equals(pid)){
+                menuDto.setSpread(true);
+                parentDto.setSpread(true);
+            }
             if(children.size()>0){
-                findChild(menu.getId());
+                findChild(menuDto, menu.getId(), pid);
             }
             return menuDto;
         }).collect(Collectors.toList());

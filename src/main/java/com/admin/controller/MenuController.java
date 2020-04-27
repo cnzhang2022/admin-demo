@@ -54,8 +54,8 @@ public class MenuController {
     }
 
     @RequestMapping(value = "/getMenuTree", name = "")
-    public List<MenuTreeDto> getMenuTree(Integer parentId) {
-        return this.menuService.getMenuTree(parentId);
+    public List<MenuTreeDto> getMenuTree(Integer parentId, Integer pid) {
+        return this.menuService.getMenuTree(parentId, pid);
     }
 
 }
