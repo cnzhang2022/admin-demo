@@ -3,6 +3,7 @@ package com.admin.controller;
 import com.admin.entity.Role;
 import com.admin.params.RoleParam;
 import com.admin.dto.RoleDto;
+import com.admin.params.RoleUserParam;
 import com.admin.service.RoleService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -52,4 +53,13 @@ public class RoleController {
         return this.roleService.selectByMap(params);
     }
 
+    @PostMapping(value = "/authUser/allocatedList", name = "")
+    public Result authUserList(int page, int limit, RoleUserParam params) {
+        return this.roleService.selectAllocatedUser(page, limit, params);
+    }
+
+    @PostMapping(value = "/authUser/unallocatedList", name = "")
+    public Result unallocatedList(int page, int limit, RoleUserParam params) {
+        return this.roleService.selectUnallocatedUser(page, limit, params);
+    }
 }

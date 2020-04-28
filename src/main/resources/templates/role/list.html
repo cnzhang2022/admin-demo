@@ -16,18 +16,13 @@
       <div class="layui-form layui-card-header layuiadmin-card-header-auto">
         <div class="layui-form-item">
           <div class="layui-inline">
-            角色筛选
+            角色名称：
           </div>
           <div class="layui-inline">
-            <select name="type" lay-filter="LAY-role-type">
-              <option value="0">全部角色</option>
-              <option value="1">超级管理员</option>
-              <option value="2">管理员</option>
-              <option value="3">采购员</option>
-              <option value="4">运营人员</option>
-              <option value="5">编辑</option>
-            </select>
+            <input type="text" class="layui-input" id="name">
           </div>
+          <button class="layui-btn" data-type="reload">搜索</button>
+
         </div>
       </div>
       <div class="layui-card-body">
@@ -39,6 +34,8 @@
         <script type="text/html" id="barDemo">
           <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
           <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i>删除</a>
+          <a class="layui-btn layui-btn-xs" style="background: #23c6c8" lay-event="permission"><i class="layui-icon layui-icon-auz"></i>分配权限</a>
+          <a class="layui-btn layui-btn-warm layui-btn-xs" lay-href="/page/role/allocatedList?roleId={{d.id}}"><i class="layui-icon layui-icon-username"></i>分配用户</a>
         </script>
             
       
@@ -74,29 +71,28 @@
 	    ,page: true //开启分页
 	    ,cols: [[ //表头
 		  {type: 'checkbox', fixed: 'left'}
-	      ,{field: 'id', title: 'ID', width:80, sort: true}
-	      ,{field: 'name', title: '名称'}
-	      ,{field: 'type', title: '类型'}
+	      ,{field: 'id', title: '角色编号', width:100, sort: true}
+	      ,{field: 'name', title: '角色名称'}
 	      ,{field: 'createTime', title: '创建时间'}
-	      ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
+	      ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width: 400}
 	    ]]
 	  });
-	
-    //搜索角色
-    form.on('select(LAY-role-type)', function(data){
-      //执行重载
-      if(data.value==0){
-        table.reload('LAY-table', {where: null});
-      }else{
-        table.reload('LAY-table', {
-          where: {type: data.value}
-        });
-      }
-    });
   
     //事件
     var active = {
-      batchdel: function(){
+      reload: function(){
+        var name = $('#name');
+        //执行重载
+        table.reload('LAY-table', {
+          page: {
+            curr: 1 //重新从第 1 页开始
+          }
+          ,where: {
+              name: name.val()
+          }
+        });
+      }
+      ,batchdel: function(){
         var checkStatus = table.checkStatus('LAY-user-back-role')
         ,checkData = checkStatus.data; //得到选中的数据
 
@@ -153,11 +149,13 @@
           }
         }); 
       }
-    }  
-    $('.layui-btn.layuiadmin-btn-role').on('click', function(){
+    }
+
+    $('.layui-form .layui-btn').on('click', function(){
       var type = $(this).data('type');
       active[type] ? active[type].call(this) : '';
     });
+
 
     table.on("tool(LAY-table)", function(e) {
       var data = e.data;
@@ -206,6 +204,8 @@
             body.find("[name='type']").val(data.type);
           }
         })
+      } else if ("permission" === e.event) {
+        alert(1);
       }
     });
 

@@ -1,5 +1,7 @@
 package com.admin.service;
 
+import com.admin.dto.RoleUserDto;
+import com.admin.params.RoleUserParam;
 import org.springframework.stereotype.Service;
 import com.admin.dao.RoleMapper;
 import com.admin.entity.Role;
@@ -15,6 +17,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.tao.frameworks.admin.tools.MapUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.BeanUtils;
+import org.springframework.util.StringUtils;
 
 /**
  * @author tao on 2020-04-18 14:52:25
@@ -101,6 +104,36 @@ public class RoleService {
             BeanUtils.copyProperties(role, roleDto);
             return roleDto;
         }).collect(Collectors.toList());
+        int total = (int)ipage.getTotal();
+        Result result = new Result();
+        result.setData(roleDtoList);
+        result.setCount(total);
+        return result;
+    }
+
+    public Result selectAllocatedUser(int page, int limit, RoleUserParam param){
+        QueryWrapper<RoleUserParam> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("r.rid", param.getRoleId());
+        if(!StringUtils.isEmpty(param.getLoginname())) {
+            queryWrapper.eq("u.loginname", param.getLoginname());
+        }
+        if(!StringUtils.isEmpty(param.getTelphone())) {
+            queryWrapper.eq("u.telphone", param.getTelphone());
+        }
+        IPage<RoleUserDto> p = new Page<>(page, limit);
+        IPage<RoleUserDto> ipage = roleMapper.selectAllocatedUser(p, queryWrapper);
+        List<RoleUserDto> roleDtoList = ipage.getRecords();
+        int total = (int)ipage.getTotal();
+        Result result = new Result();
+        result.setData(roleDtoList);
+        result.setCount(total);
+        return result;
+    }
+
+    public Result selectUnallocatedUser(int page, int limit, RoleUserParam param){
+        IPage<RoleUserDto> p = new Page<>(page, limit);
+        IPage<RoleUserDto> ipage = roleMapper.selectUnallocatedUser(p, param);
+        List<RoleUserDto> roleDtoList = ipage.getRecords();
         int total = (int)ipage.getTotal();
         Result result = new Result();
         result.setData(roleDtoList);

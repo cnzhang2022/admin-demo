@@ -18,9 +18,14 @@ public class AdminDto {
 private Integer id;
 
     /**
-    * 登录名
+    * 登录名称
     */
     private String loginname;
+
+    /**
+     * 用户名称
+     */
+    private String username;
 
     /**
     * 手机号
