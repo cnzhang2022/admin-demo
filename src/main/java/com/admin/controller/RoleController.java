@@ -5,6 +5,7 @@ import com.admin.params.RoleParam;
 import com.admin.dto.RoleDto;
 import com.admin.params.RoleUserParam;
 import com.admin.service.RoleService;
+import com.admin.service.RoleUserService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +23,8 @@ public class RoleController {
 
     @Resource
     private RoleService roleService;
+    @Resource
+    private RoleUserService roleUserService;
 
     @PostMapping(value = "/insert", name = "插入")
     public void insert(Role role) {
@@ -61,5 +64,15 @@ public class RoleController {
     @PostMapping(value = "/authUser/unallocatedList", name = "")
     public Result unallocatedList(int page, int limit, RoleUserParam params) {
         return this.roleService.selectUnallocatedUser(page, limit, params);
+    }
+
+    @RequestMapping(value = "/authUser/saveSelectAll", name = "")
+    public void saveSelectAll(Integer rid, String uids) {
+        roleUserService.insertBatch(rid, uids);
+    }
+
+    @RequestMapping(value = "/authUser/cancel", name = "")
+    public void deleteCancel(Integer rid, Integer uid) {
+        roleUserService.deleteCancel(rid, uid);
     }
 }

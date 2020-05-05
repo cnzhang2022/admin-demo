@@ -15,10 +15,14 @@ import java.util.Date;
 public class RoleUserDto {
 
     /**
-    * 主键
+    * 角色ID
     */
-    @TableId
-    private Integer id;
+    private Integer rid;
+
+    /**
+     * 用户ID
+     */
+    private Integer uid;
 
     /**
     * 登录名称

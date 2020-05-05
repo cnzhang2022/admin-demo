@@ -27,16 +27,15 @@
                         <input type="text" name="telphone" placeholder="请输入" autocomplete="off" class="layui-input">
                     </div>
                 </div>
-                <div class="layui-inline">
-                    <button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-user-back-search">
-                        <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
-                    </button>
+                <div class="layui-form-item layui-hide">
+                    <button class="layui-btn" lay-submit lay-filter="LAY-add-submit" id="LAY-add-submit">确定</button>
                 </div>
             </div>
+            <input type="hidden" id="uids">
         </div>
 
         <div class="layui-card-body">
-            <table id="LAY-user-back-manage" lay-filter="LAY-user-back-manage"></table>
+            <table id="LAY-table" lay-filter="LAY-table"></table>
             <script type="text/html" id="buttonTpl">
                 {{#  if(d.status == 1){ }}
                 <button class="layui-btn layui-btn-xs">正常</button>
@@ -60,13 +59,14 @@
             ,table = layui.table;
         var roleId = getQueryVariable("roleId");
         table.render({
-            elem: '#LAY-user-back-manage'
+            elem: '#LAY-table'
             ,height: 500
             ,url: '/role/authUser/unallocatedList?roleId='+roleId
             ,method: 'post'
             ,page: true //开启分页
             ,cols: [[ //表头
                 {type: 'checkbox', fixed: 'left'}
+                ,{field: 'uid', title: 'uid'}
                 ,{field: 'loginname', title: '登录名称'}
                 ,{field: 'username', title: '用户名称'}
                 ,{field: 'email', title: '邮箱'}
@@ -75,12 +75,21 @@
                 ,{field: 'createTime', title: '创建时间'}
             ]]
         });
+        table.on('checkbox(LAY-table)', function(obj){
+            var checkStatus = table.checkStatus('LAY-table')
+            ,data = checkStatus.data;
+            var list = new Array();
+            for(var i = 0; i < data.length; i++){
+                list[i] = data[i].uid;
+            }
+            $("#uids").val(list.join());
 
+        });
         //监听搜索
         form.on('submit(LAY-user-back-search)', function(data){
             var field = data.field;
             //执行重载
-            table.reload('LAY-user-back-manage', {
+            table.reload('LAY-table', {
                 where: field
             });
         });

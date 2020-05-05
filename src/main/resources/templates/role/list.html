@@ -21,7 +21,7 @@
           <div class="layui-inline">
             <input type="text" class="layui-input" id="name">
           </div>
-          <button class="layui-btn" data-type="reload">搜索</button>
+          <button class="layui-btn" data-type="reload" lay-filter="LAY-user-back-search">搜索</button>
 
         </div>
       </div>
@@ -40,13 +40,6 @@
             
       
         <table id="LAY-table" lay-filter="LAY-table"></table>
-        <script type="text/html" id="buttonTpl">
-          {{#  if(d.check == true){ }}
-            <button class="layui-btn layui-btn-xs">已审核</button>
-          {{#  } else { }}
-            <button class="layui-btn layui-btn-primary layui-btn-xs">未审核</button>
-          {{#  } }}
-        </script>
       </div>
     </div>
   </div>
@@ -77,6 +70,16 @@
 	      ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width: 400}
 	    ]]
 	  });
+
+    //监听搜索
+    form.on('submit(LAY-user-back-search)', function(data){
+      var field = data.field;
+
+      //执行重载
+      table.reload('LAY-table', {
+        where: field
+      });
+    });
   
     //事件
     var active = {
@@ -151,7 +154,7 @@
       }
     }
 
-    $('.layui-form .layui-btn').on('click', function(){
+    $('.layui-btn.layuiadmin-btn-role').on('click', function(){
       var type = $(this).data('type');
       active[type] ? active[type].call(this) : '';
     });

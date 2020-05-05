@@ -14,15 +14,15 @@
     <!-- 重新生成代码时，NotReplaceableStart -> NotReplaceableEnd 中间的内容不会被覆盖 -->
 
     <select id="selectAllocatedUser" resultType="com.admin.dto.RoleUserDto">
-        select r.id as id, u.loginname as loginname, u.username as username,
+        select r.rid as rid, u.id as uid, u.loginname as loginname, u.username as username,
         u.telphone as telphone, u.email as email, u.status as status, u.create_time as createTime
         from role_user as r left join admin as u on r.uid = u.id
         ${ew.customSqlSegment}
     </select>
     <select id="selectUnallocatedUser" resultType="com.admin.dto.RoleUserDto">
-        select u.loginname as loginname, u.username as username,
+        select u.id as uid, u.loginname as loginname, u.username as username,
         u.telphone as telphone, u.email as email, u.status as status, u.create_time as createTime
-        from admin as u where not exists(select * from role_user where u.id=uid and rid=5)
+        from admin as u where not exists(select * from role_user where u.id=uid and rid=#{param.roleId})
          <if test="param.loginname!=null and param.loginname!=''">
             and loginname like CONCAT('%', #{param.loginname},'%')
          </if>

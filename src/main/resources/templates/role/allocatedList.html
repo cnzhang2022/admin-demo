@@ -50,7 +50,7 @@
                 {{#  } }}
             </script>
             <script type="text/html" id="barDemo">
-                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-close"></i>取消授权</a>
+                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="cancel"><i class="layui-icon layui-icon-close"></i>取消授权</a>
             </script>
         </div>
     </div>
@@ -133,12 +133,14 @@
 
                         //监听提交
                         iframeWindow.layui.form.on('submit('+submitID+')', function(data){
-                            var field = data.field; //获取提交的字段
+                            let body = layer.getChildFrame('body', index);
+                            var uids = body.find('#uids').val();
                             $.ajax({
                                 type: "post",
-                                url: "/admin/insert",
-                                data: field,
+                                url: "/role/authUser/saveSelectAll",
+                                data: {rid: roleId, uids: uids},
                                 dataType: "json",
+
                                 success: function(data){
                                     if(data.code==0) {
                                         layer.msg("成功", {time: 1000});
@@ -147,7 +149,10 @@
                                     }
                                 }
                             });
-                            table.reload('LAY-user-back-manage'); //数据刷新
+                            //执行重载
+                            table.reload('LAY-user-back-manage', {
+                                page: true
+                            });
                             layer.close(index); //关闭弹层
                         });
                         submit.trigger('click');
@@ -164,14 +169,24 @@
 
         table.on("tool(LAY-user-back-manage)", function(e) {
             var data = e.data;
-            if ("del" === e.event) {
-                layer.confirm("确定删除？", function(t) {
+            if ("cancel" === e.event) {
+                layer.confirm("确定要取消该用户角色吗？", function(t) {
                     e.del(), layer.close(t)
                     $.ajax({
                         type: "get",
-                        url: "/admin/delete?id="+data.id,
+                        url: "/role/authUser/cancel?rid="+data.rid+"&uid="+data.uid,
                         dataType: "json",
-                        success: function(data){}
+                        success: function(data){
+                            if(data.code==0) {
+                                layer.msg("成功", {time: 1000});
+                            }else{
+                                layer.msg(data.msg, {time: 1000});
+                            }
+                        }
+                    });
+                    //执行重载
+                    table.reload('LAY-user-back-manage', {
+                        page: true
                     });
                 });
             }else if ("edit" === e.event) {

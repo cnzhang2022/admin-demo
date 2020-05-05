@@ -196,7 +196,9 @@
                   type: "get",
                   url: "/admin/delete?id="+data.id,
                   dataType: "json",
-                  success: function(data){}
+                  success: function(data){
+                    e.del();
+                  }
                 });
 			});
 		}else if ("edit" === e.event) {
